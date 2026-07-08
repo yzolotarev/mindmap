@@ -1,4 +1,4 @@
-# Rectify - connect-the-dots схема для работы с ИИ
+# Mindmap - connect-the-dots схема для работы с ИИ
 
 Повышает продуктивность и осознанность при работе с ИИ, а также помогает разобраться
 в любой концепции. Вместо того чтобы читать готовое объяснение агента (и забыть его
@@ -37,7 +37,7 @@
 
 ## Канвас
 
-`rectify-canvas.py` - однофайловый Tkinter-редактор графов, без зависимостей.
+`mindmap-canvas.py` - однофайловый Tkinter-редактор графов, без зависимостей.
 
 | Действие | Как |
 |---|---|
@@ -53,10 +53,10 @@
 Запуск:
 
 ```bash
-python3 rectify-canvas.py --nodes "Насос::Фильтр::Бак" --title "гидравлика"
+python3 mindmap-canvas.py --nodes "Насос::Фильтр::Бак" --title "гидравлика"
 ```
 
-Экспорт пишется в `/tmp/rectify-export.txt`:
+Экспорт пишется в `/tmp/mindmap-export.txt`:
 
 ```
 === NODES ===
@@ -71,7 +71,7 @@ python3 rectify-canvas.py --nodes "Насос::Фильтр::Бак" --title "г
 
 ## Интеграции
 
-- `integrations/claude-code/` - скилл для Claude Code (`~/.claude/skills/schema/`)
+- `integrations/claude-code/` - скилл для Claude Code (`~/.claude/skills/mindmap/`)
 - `integrations/pi/` - расширение для [Pi](https://github.com/earendil-works/pi) с
   автотриггером: перехватывает только объяснительные запросы («объясни», «как работает»,
   «хочу чтобы...»), а не каждый ввод

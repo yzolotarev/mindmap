@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-rectify-canvas — 2D graph editor.
+mindmap-canvas — 2D graph editor.
 
 C=arrow V=line B=group  LMB=drag  RMB=connect
 2xLMB на линии=метка ('!' в конце = жирная/emphasized)
 Ctrl+Z=undo  Ctrl+E=export  close=auto-export
 
 --nodes "A::B::C" (разделители :: | или перенос)  --title "тема"  --load file.json
-Экспорт: /tmp/rectify-export.txt   ->/-- обычная   =>/== жирная   ": метка" после связи
+Экспорт: /tmp/mindmap-export.txt   ->/-- обычная   =>/== жирная   ": метка" после связи
 """
 import tkinter as tk
 from tkinter import messagebox, simpledialog
@@ -33,7 +33,7 @@ def _round_rect_coords(cx, cy, w, h, r, steps=12):
     return pts
 
 HOME = os.path.expanduser("~")
-SAVE_PATH = f"{HOME}/.rectify_canvas.json"
+SAVE_PATH = f"{HOME}/.mindmap_canvas.json"
 
 _theme = "dark"  # force dark
 
@@ -228,7 +228,7 @@ class Snapshot:
 class App:
     def __init__(self, root):
         self.root = root
-        root.title("Rectify Canvas")
+        root.title("Mindmap Canvas")
         root.geometry("1000x700")
         root.configure(bg=BG)
         self.nodes = []
@@ -472,7 +472,7 @@ class App:
     def export(self):
         if not self.nodes: return
         idx = {n:chr(65+i) if i<26 else f"N{i}" for i,n in enumerate(self.nodes)}
-        lines = ["[RECTIFY EXPORT]", "=== NODES ==="]
+        lines = ["[MINDMAP EXPORT]", "=== NODES ==="]
         for n in self.nodes: lines.append(f"  {idx[n]}: {n.name}")
         if self.conns:
             lines += ["", "=== CONNECTIONS ==="]
@@ -489,7 +489,7 @@ class App:
                 lines.append(f"  [{g.name}]: {', '.join(ms)}")
         r = "\n".join(lines)
         self.root.clipboard_clear(); self.root.clipboard_append(r)
-        with open("/tmp/rectify-export.txt", "w") as f: f.write(r)
+        with open("/tmp/mindmap-export.txt", "w") as f: f.write(r)
         self._msg("Exported!")
 
     def save(self):
@@ -541,7 +541,7 @@ def main():
             idx = sys.argv.index("--load"); app.load(sys.argv[idx+1] if idx+1<len(sys.argv) else None)
         if "--title" in sys.argv:
             idx = sys.argv.index("--title")
-            if idx+1 < len(sys.argv): root.title("Rectify — " + sys.argv[idx+1])
+            if idx+1 < len(sys.argv): root.title("Mindmap — " + sys.argv[idx+1])
         if "--nodes" in sys.argv:
             idx = sys.argv.index("--nodes")
             if idx+1 < len(sys.argv):

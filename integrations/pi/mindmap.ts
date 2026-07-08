@@ -1,5 +1,5 @@
 /**
- * Rectify — Pi Extension (v7 — умный триггер + GRINDE)
+ * Mindmap — Pi Extension (v7 — умный триггер + GRINDE)
  *
  * Схема по Джастину Сангу (connect-the-dots): агент раскладывает тему на
  * изолированные объекты, юзер САМ соединяет их на канвасе (encoding, Bloom 3-5),
@@ -10,7 +10,7 @@
  * 3. В режиме on перехватываются ТОЛЬКО объяснительные запросы
  *    («объясни», «как работает», «хочу чтобы...») — не любой ввод
  *
- * /rectify (on|off|status)  /rectify <тема>  /schem <тема>
+ * /mindmap (on|off|status)  /mindmap <тема>  /schem <тема>
  */
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -18,10 +18,10 @@ import { spawn } from "node:child_process";
 import { join } from "node:path";
 
 const HOME = process.env.HOME || "/home/y";
-const STATE_FILE = HOME + "/.pi/agent/rectify.state";
-const CANVAS = HOME + "/bin/rectify-canvas.py";
-const SCENE_FILE = "/tmp/rectify-scene.txt";
-const EXPORT_FILE = "/tmp/rectify-export.txt";
+const STATE_FILE = HOME + "/.pi/agent/mindmap.state";
+const CANVAS = HOME + "/bin/mindmap-canvas.py";
+const SCENE_FILE = "/tmp/mindmap-scene.txt";
+const EXPORT_FILE = "/tmp/mindmap-export.txt";
 
 // Триггер «нужного момента»: юзер просит объяснить ИЛИ объясняет сам, как должно работать
 const TRIGGER = /объясни|расскажи про|что такое|как (это |оно )?работает|как устроен|почему|разбер[ёе]мся|разбери|не понимаю|не понял|принцип работы|схем[ау]|хочу чтобы|должно работать|я себе представляю|вот как я вижу/i;
@@ -37,7 +37,7 @@ export default function (pi: any) {
 	function setOn(v: boolean, ctx: any) {
 		on = v;
 		try { writeFileSync(STATE_FILE, v ? "on" : "off", "utf-8"); } catch {}
-		ctx.ui.notify(v ? "Rectify: ВКЛ" : "Rectify: ВЫКЛ", "info");
+		ctx.ui.notify(v ? "Mindmap: ВКЛ" : "Mindmap: ВЫКЛ", "info");
 	}
 
 	async function phase1(prompt: string, ctx: any) {
@@ -81,11 +81,11 @@ export default function (pi: any) {
 				nodes = m ? m[1].split("::").map((s: string) => s.trim()).filter(Boolean) : [];
 				scene = t.replace(/__NODES__:\s*.+[\r\n]?/, "").trim();
 			} catch (e: any) {
-				ctx.ui.notify("rectify: Gemini ошибка " + e.message, "warning");
+				ctx.ui.notify("mindmap: Gemini ошибка " + e.message, "warning");
 				return;
 			}
 		}
-		if (!nodes.length) { ctx.ui.notify("rectify: нет узлов", "warning"); return; }
+		if (!nodes.length) { ctx.ui.notify("mindmap: нет узлов", "warning"); return; }
 
 		if (!scene) {
 			const pos = [{x:0,y:0},{x:28,y:0},{x:14,y:4},{x:0,y:8},{x:28,y:8},{x:8,y:12},{x:24,y:12},{x:0,y:16},{x:28,y:16}];
@@ -106,11 +106,11 @@ export default function (pi: any) {
 		const title = prompt.slice(0, 40).replace(/\s+/g, " ").trim();
 		spawn("python3", [CANVAS, "--nodes", nodes.join("::"), "--title", title], { detached: true, stdio: "ignore" }).unref();
 
-		ctx.ui.notify("rectify: " + nodes.length + " узлов", "info");
+		ctx.ui.notify("mindmap: " + nodes.length + " узлов", "info");
 		return {
 			message: {
-				customType: "rectify",
-				content: "**RECTIFY**\n\n```\n" + scene + "\n```\n\nСоедини в окне и закрой — канвас сам отправит «готово», я прочитаю export.",
+				customType: "mindmap",
+				content: "**MINDMAP**\n\n```\n" + scene + "\n```\n\nСоедини в окне и закрой — канвас сам отправит «готово», я прочитаю export.",
 				display: true,
 			},
 		};
@@ -123,11 +123,11 @@ export default function (pi: any) {
 			if (exp) {
 				const scene = readFileSync(SCENE_FILE, "utf-8").trim();
 				try { writeFileSync(SCENE_FILE, ""); writeFileSync(EXPORT_FILE, ""); } catch {}
-				ctx.ui.notify("rectify: export", "info");
+				ctx.ui.notify("mindmap: export", "info");
 				return {
 					message: {
-						customType: "rectify-result",
-						content: "**RECTIFY — Результат**\n\nИсходные:\n```\n" + scene + "\n```\n\nСоединения юзера (`->`/`--` обычная, `=>`/`==` жирная=главная, `: текст` = метка связи):\n```\n" + exp + "\n```\n\n" +
+						customType: "mindmap-result",
+						content: "**MINDMAP — Результат**\n\nИсходные:\n```\n" + scene + "\n```\n\nСоединения юзера (`->`/`--` обычная, `=>`/`==` жирная=главная, `: текст` = метка связи):\n```\n" + exp + "\n```\n\n" +
 							"Разбери как учитель по методу Санга:\n" +
 							"1. ВЕРНЫЕ связи — коротко подтверди (не пересказывай).\n" +
 							"2. ОШИБОЧНЫЕ/недостающие — максимум 2 самые важные: покажи стрелки на ТОЙ ЖЕ ASCII-сцене (объекты не двигать) и объясни почему.\n" +
@@ -140,7 +140,7 @@ export default function (pi: any) {
 			}
 		}
 
-		const cmd = event.prompt.match(/^\/rectify\s+(.+)/s);
+		const cmd = event.prompt.match(/^\/mindmap\s+(.+)/s);
 		const schemCmd = event.prompt.match(/^\/schem\s+(.+)/s);
 		if (cmd) return phase1(cmd[1].trim(), ctx);
 		if (schemCmd) return phase1(schemCmd[1].trim(), ctx);
@@ -149,13 +149,13 @@ export default function (pi: any) {
 			&& TRIGGER.test(event.prompt)) return phase1(event.prompt, ctx);
 	});
 
-	pi.registerCommand("rectify", {
-		description: "Rectify — Connect-the-Dots. /rectify on|off|status или /rectify <тема>",
+	pi.registerCommand("mindmap", {
+		description: "Mindmap — Connect-the-Dots. /mindmap on|off|status или /mindmap <тема>",
 		handler: async (args: string, ctx: any) => {
 			const a = (args||"").trim().toLowerCase();
 			if ("off" === a || "0" === a || "false" === a) setOn(false, ctx);
 			else if ("on" === a || "1" === a || "true" === a) setOn(true, ctx);
-			else if (!a || "status" === a) ctx.ui.notify("Rectify: " + (on ? "ВКЛ" : "ВЫКЛ"), "info");
+			else if (!a || "status" === a) ctx.ui.notify("Mindmap: " + (on ? "ВКЛ" : "ВЫКЛ"), "info");
 			else return phase1(args!.trim(), ctx);
 		},
 	});
@@ -169,6 +169,6 @@ export default function (pi: any) {
 	});
 
 	pi.on("session_start", (_e: any, ctx: any) => {
-		ctx.ui.notify("Rectify: " + (on ? "ВКЛ (/rectify off)" : "ВЫКЛ (/rectify on)"), "info");
+		ctx.ui.notify("Mindmap: " + (on ? "ВКЛ (/mindmap off)" : "ВЫКЛ (/mindmap on)"), "info");
 	});
 }
