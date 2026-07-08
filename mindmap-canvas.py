@@ -531,6 +531,9 @@ class App:
             if c["f"] < len(self.nodes) and c["t"] < len(self.nodes):
                 self.conns.append(Connection(self.ca, self.nodes[c["f"]], self.nodes[c["t"]],
                     c.get("y","arrow"), c.get("l",""), c.get("e",False)))
+        for gd in data.get("groups",[]):
+            ms = [self.nodes[i] for i in gd.get("nodes",[]) if i < len(self.nodes)]
+            if ms: self.groups.append(GroupBox(self.ca, ms, gd.get("name")))
         self._msg("Loaded")
 
     def _msg(self, m): self.status.config(text=m)

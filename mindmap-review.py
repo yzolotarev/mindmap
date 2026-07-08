@@ -20,15 +20,21 @@ W, H = 1000, 642
 
 
 def parse_export(path):
-    nodes, pos, conns = {}, {}, []
+    nodes, pos, conns, groups = {}, {}, [], []
     section = None
     for raw in open(path, encoding="utf-8"):
         s = raw.strip()
         if s.startswith("=== NODES"): section = "nodes"; continue
         if s.startswith("=== POSITIONS"): section = "pos"; continue
         if s.startswith("=== CONNECTIONS"): section = "conns"; continue
+        if s.startswith("=== GROUPS"): section = "groups"; continue
         if s.startswith("==="): section = None; continue
-        if not s or s.startswith("["): continue
+        if not s: continue
+        if section == "groups":
+            m = re.match(r"\[(.+)\]:\s*(.+)", s)
+            if m: groups.append((m.group(1), [x.strip() for x in m.group(2).split(",")]))
+            continue
+        if s.startswith("["): continue
         if section == "nodes":
             m = re.match(r"(\w+):\s*(.+)", s)
             if m: nodes[m.group(1)] = m.group(2)
@@ -38,7 +44,7 @@ def parse_export(path):
         elif section == "conns":
             m = re.match(r"(\w+)\s*(->|--|=>|==)\s*(\w+)(?:\s*:\s*(.+))?", s)
             if m: conns.append((m.group(1), m.group(2), m.group(3), (m.group(4) or "").strip()))
-    return nodes, pos, conns
+    return nodes, pos, conns, groups
 
 
 def main():
@@ -48,7 +54,7 @@ def main():
     ap.add_argument("--title", default="правки")
     args = ap.parse_args()
 
-    nodes, pos, conns = parse_export(args.export)
+    nodes, pos, conns, groups = parse_export(args.export)
     letters = list(nodes.keys())
     idx = {l: i for i, l in enumerate(letters)}
 
@@ -79,7 +85,12 @@ def main():
         label = reason or ("не хватало" if tag == "add" else "надо так")
         json_conns.append({"f": idx[a], "t": idx[b], "y": "fix", "l": label, "e": False})
 
-    data = {"nodes": json_nodes, "conns": json_conns, "groups": []}
+    json_groups = []
+    for name, members in groups:
+        ms = [idx[m] for m in members if m in idx]
+        if ms: json_groups.append({"name": name, "nodes": ms})
+
+    data = {"nodes": json_nodes, "conns": json_conns, "groups": json_groups}
     out_path = "/tmp/mindmap-review.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
