@@ -113,7 +113,8 @@ def main():
     for tok in args.mark.split(","):
         tok = tok.strip()
         if not tok: continue
-        pair, tag = tok.split(":")
+        parts = tok.split(":", 2)
+        pair, tag = parts[0], parts[1]
         a, b = pair.split("-")
         marks[(a, b)] = tag
 

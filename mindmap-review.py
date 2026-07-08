@@ -5,10 +5,12 @@
 Читает /tmp/mindmap-export.txt (NODES + POSITIONS + CONNECTIONS), строит json
 для mindmap-canvas.py --load, добавляет correction-рёбра из --mark как typ=fix.
 
---mark "X-Y:add,X-Y:wrong" — как в mindmap-ascii.py:
-  add   = стрелки не хватало  -> жёлтая пунктирная X->Y с меткой "+ добавлено"
-  wrong = связь юзера неверна -> сама связь юзера не трогается, рядом рисуется
-          жёлтая пунктирная "правильная" версия с меткой "✓ верно"
+--mark "X-Y:add:причина,X-Y:wrong:причина" — третье поле = короткая надпись (2-4 слова)
+прямо на жёлтой стрелке, ГОВОРЯЩАЯ ПОЧЕМУ (не вердикт "верно/неверно"):
+  add   = стрелки не хватало  -> жёлтая пунктирная X->Y
+  wrong = связь юзера неверна -> его связь не трогается, рядом жёлтая пунктирная
+          правильная версия
+Без причины подпись по умолчанию: add -> "не хватало", wrong -> "надо так".
 """
 import re, json, argparse, subprocess, sys, os
 
@@ -66,13 +68,15 @@ def main():
     for tok in args.mark.split(","):
         tok = tok.strip()
         if not tok: continue
-        pair, tag = tok.split(":")
+        parts = tok.split(":", 2)
+        pair, tag = parts[0], parts[1]
+        reason = parts[2].strip() if len(parts) > 2 else ""
         a, b = pair.split("-")
-        marks[(a, b)] = tag
+        marks[(a, b)] = (tag, reason)
 
-    for (a, b), tag in marks.items():
+    for (a, b), (tag, reason) in marks.items():
         if a not in idx or b not in idx: continue
-        label = "+ добавлено" if tag == "add" else "✓ верно"
+        label = reason or ("не хватало" if tag == "add" else "надо так")
         json_conns.append({"f": idx[a], "t": idx[b], "y": "fix", "l": label, "e": False})
 
     data = {"nodes": json_nodes, "conns": json_conns, "groups": []}
@@ -81,7 +85,8 @@ def main():
         json.dump(data, f, ensure_ascii=False, indent=2)
 
     subprocess.Popen(
-        ["python3", CANVAS, "--load", out_path, "--title", args.title],
+        ["python3", CANVAS, "--load", out_path, "--title", args.title,
+         "--no-signal", "--export-file", "/tmp/mindmap-review-export.txt"],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
     )
 

@@ -35,6 +35,12 @@ def _round_rect_coords(cx, cy, w, h, r, steps=12):
 HOME = os.path.expanduser("~")
 SAVE_PATH = f"{HOME}/.mindmap_canvas.json"
 
+EXPORT_PATH = "/tmp/mindmap-export.txt"
+if "--export-file" in sys.argv:
+    _i = sys.argv.index("--export-file")
+    if _i + 1 < len(sys.argv): EXPORT_PATH = sys.argv[_i + 1]
+NO_SIGNAL = "--no-signal" in sys.argv  # не печатать фразу xdotool после закрытия
+
 _theme = "dark"  # force dark
 
 if _theme == "dark":
@@ -501,7 +507,7 @@ class App:
                 lines.append(f"  [{g.name}]: {', '.join(ms)}")
         r = "\n".join(lines)
         self.root.clipboard_clear(); self.root.clipboard_append(r)
-        with open("/tmp/mindmap-export.txt", "w") as f: f.write(r)
+        with open(EXPORT_PATH, "w") as f: f.write(r)
         self._msg("Exported!")
 
     def save(self):
@@ -532,6 +538,7 @@ class App:
     def _close(self):
         if self.nodes: self.export()
         self.root.destroy()
+        if NO_SIGNAL: return
         try:
             import subprocess, time
             time.sleep(0.3)
