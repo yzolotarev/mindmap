@@ -46,6 +46,7 @@ if _theme == "dark":
     NODE_SEL    = "#f9e2af"
     CONN_ARROW  = "#f38ba8"
     CONN_LINE   = "#a6e3a1"
+    CONN_FIX    = "#f9e2af"
     GROUP_C     = "#57b8c0"
     STATUS_FG   = "#6c7086"
     BTN_BG      = "#2a2b36"
@@ -59,6 +60,7 @@ else:
     NODE_SEL    = "#cc8800"
     CONN_ARROW  = "#e53e3e"
     CONN_LINE   = "#38a169"
+    CONN_FIX    = "#d69e2e"
     GROUP_C     = "#319795"
     STATUS_FG   = "#718096"
     BTN_BG      = "#ffffff"
@@ -188,12 +190,13 @@ class Connection:
         return ax, ay, bx, by
 
     def _draw(self):
-        c = CONN_ARROW if self.typ=="arrow" else CONN_LINE
-        a = tk.LAST if self.typ=="arrow" else None
+        c = CONN_FIX if self.typ=="fix" else (CONN_ARROW if self.typ=="arrow" else CONN_LINE)
+        a = tk.LAST if self.typ in ("arrow","fix") else None
+        dash = (7,4) if self.typ=="fix" else None
         ax, ay, bx, by = self._ends()
         self.id = self.ca.create_line(
             ax, ay, bx, by, fill=c, width=5 if self.emph else 3, arrow=a,
-            smooth=True, splinesteps=36, tags="conn")
+            dash=dash, smooth=True, splinesteps=36, tags="conn")
         if self.label:
             mx, my = (ax+bx)//2, (ay+by)//2
             self.label_id = self.ca.create_text(
