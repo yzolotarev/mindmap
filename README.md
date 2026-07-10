@@ -1,143 +1,141 @@
-# Mindmap - объясни ИИ стрелками, а не абзацами
+# Mindmap - explain to AI with arrows, not paragraphs
 
-**ИИ понял тебя неправильно? Накидай связи на канвасе - 30 секунд вместо десяти
-абзацев.** Агент выкладывает объекты, ты соединяешь их стрелками, как видишь ты, -
-и обе головы (твоя и ИИ) наконец смотрят на одну картинку.
-
-<!-- TODO: hero.gif - юзер печатает «хочу объяснить архитектуру», окно с объектами,
-три стрелки, агент: «понял, вот план» (15 сек) -->
+**AI misunderstood you? Throw connections on the canvas - 30 seconds instead of ten
+paragraphs.** The agent lays out objects, you connect them with arrows as you see it -
+and both heads (yours and the AI's) are finally looking at the same picture.
 
 ```bash
 git clone https://github.com/yzolotarev/mindmap && cd mindmap && ./install.sh
 ```
 
-Установщик сам найдёт твоего агента (Claude Code / Pi / OpenClaude) и подключит
-скилл. Зависимости: python3 + Chrome/Chromium (без Chrome - Tk-fallback).
+The installer will find your agent itself (Claude Code / Pi / OpenClaude) and connect
+the skill. Dependencies: python3 + Chrome/Chromium (without Chrome - Tk-fallback).
 
-## Какие болячки это чинит
+## What pain points this fixes
 
-**Вы с ИИ не поняли друг друга:**
-- «ИИ опять сделал не то» - 5 стрелок точнее 10 абзацев, с первого раза.
-- «Сейчас будет дорого, а вдруг он не так понял?» - минутная сверка ДО того, как
-  агент наломал, а не разбор завалов после.
-- «Идея в голове есть, а слов нет» - соединил коробочки = объяснил.
-- «ТЗ на страницу, а исполнитель понял по-своему» - карту нельзя прочесть двояко:
-  стрелка либо туда, либо нет. Схема становится спецификацией.
+**You and the AI didn't understand each other:**
+- "AI did the wrong thing again" - 5 arrows are more accurate than 10 paragraphs, on the first try.
+- "It's about to get expensive, what if it misunderstood?" - a one-minute reconciliation BEFORE the
+  agent breaks things, rather than cleaning up the mess after.
+- "The idea is in my head, but there are no words" - connected the boxes = explained.
+- "TOR is a page long, but the assignee understood it in their own way" - a map cannot be read in two ways:
+  an arrow is either there or it isn't. The diagram becomes a specification.
 
-**В голову не лезет (учёба по методу Justin Sung):**
-- «Прочитал статью - назавтра пусто» - раскладываешь в карту по кусочкам, назавтра
-  карта рисуется по памяти.
-- «Туториал прошёл, сам повторить не могу» - иллюзия понимания лопается на первой
-  же стрелке, которую не знаешь куда вести. И видно, ЧТО именно непонятно.
-- «Учу к экзамену - каша из фактов» - факты становятся структурой; что в карту
-  не легло, честно уходит в зубрёжку.
-- «Чужая кодбаза, с чего начать?» - агент даёт главные кубики, ты угадываешь
-  связи, он поправляет: карта местности за полчаса вместо тумана.
-- «У однокурсника математика щёлкает сама, у меня нет» - карта чинит «почему»
-  (концепты, связи теорем), задачник чинит «как решать». Умение видеть структуру
-  тренируется и переносится на всё остальное мышление.
+**It won't fit into your head (learning by the Justin Sung method):**
+- "Read an article - blank mind the next day" - lay it out in a map piece by piece, tomorrow
+  the map is drawn from memory.
+- "Finished the tutorial, can't repeat it myself" - the illusion of understanding pops on the very
+  first arrow that you don't know where to lead. And it shows WHAT exactly is unclear.
+- "Studying for an exam - a mess of facts" - facts become a structure; what didn't fit into the map
+  honestly goes to rote memorization.
+- "Someone else's codebase, where to start?" - the agent gives the main blocks, you guess the
+  connections, it corrects you: a map of the area in half an hour instead of fog.
+- "A classmate's math clicks by itself, mine doesn't" - the map fixes "why"
+  (concepts, connections of theorems), the problem book fixes "how to solve". The ability to see structure
+  is trained and transfers to all other thinking.
 
-**Мысли по кругу:**
-- «Третий вечер гоняю одно решение» - круг высыпан на стол: тупики и недодуманные
-  ветки видны глазами, по кругу ходить больше не получается.
-- «Спорим, а оказалось - согласны» - точка расхождения двух картинок видна пальцем.
-- «Час болтали с ИИ, нить потерялась» - карта = сохранёнка рассуждения; открыл
-  через неделю и продолжил.
+**Thoughts in a circle:**
+- "For the third evening I'm chasing one solution" - the circle is poured out on the table: dead ends and half-baked
+  branches are visible to the eyes, it's no longer possible to walk in circles.
+- "We argue, but it turned out - we agree" - the point of divergence of two pictures is visible with a finger.
+- "Talked to AI for an hour, the thread got lost" - map = saved state of reasoning; opened
+  a week later and continued.
 
-## Как это выглядит
+## How it looks
 
 ```
-Ты: «объясни, как работает sing-box»
+You: "explain how sing-box works"
 
-Агент:                                Канвас (GUI):
-┌────────────┐      ┌──────────┐      окно с теми же объектами;
-│ Приложение │      │   ТСПУ   │      ты соединяешь стрелками,
-└────────────┘      └──────────┘      группируешь рамками
+Agent:                                Canvas (GUI):
+┌────────────┐      ┌──────────┐      window with the same objects;
+│ Приложение │      │   ТСПУ   │      you connect with arrows,
+└────────────┘      └──────────┘      group with frames
       ┌──────────┐
-      │ sing-box │                    закрыл окно = схема улетела
-      └──────────┘                    агенту на проверку
+      │ sing-box │                    closed the window = the diagram flew
+      └──────────┘                    to the agent for review
 ┌────────┐        ┌─────────┐
 │ Сервер │        │ Роутинг │
 └────────┘        └─────────┘
 
-Агент (жёлтым прямо на канвасе): «а ТСПУ смотрит на трафик, не наоборот»
-        + оранжевый вопрос: «почему Роутинг связан с Сервером?»
+Agent (in yellow right on the canvas): "but TSPU looks at the traffic, not vice versa"
+        + orange question: "why is Routing connected to Server?"
 ```
 
-Правила игры простые: **узлы дёшевы, стрелки священны**. Объекты и подсказки
-генерирует агент, но ни одной связи он за тебя не нарисует - понимает тот, кто
-рисует стрелки. Агент спорит жёлтыми правками (максимум 2 за раз) и оранжевыми
-вопросами, а когда картинки совпали, карта становится договором: агент обязан
-сверять с ней дальнейшую работу.
+The rules of the game are simple: **nodes are cheap, arrows are sacred**. Objects and hints
+are generated by the agent, but it won't draw a single connection for you - the one who
+draws arrows understands. The agent argues with yellow corrections (maximum 2 at a time) and orange
+questions, and when the pictures match, the map becomes a contract: the agent is obliged
+to check further work against it.
 
-## Канвас
+## Canvas
 
-`mindmap-canvas.py` - однофайловый веб-редактор: stdlib HTTP-сервер + Chrome в
-режиме `--app`. Без внешних зависимостей. Закрытие окна = авто-экспорт + сигнал
-агенту. Fallback без Chrome: `mindmap-canvas-tk.py` (тот же CLI и формат).
+`mindmap-canvas.py` - single-file web editor: stdlib HTTP-server + Chrome in
+`--app` mode. No external dependencies. Closing the window = auto-export + signal
+to the agent. Fallback without Chrome: `mindmap-canvas-tk.py` (same CLI and format).
 
-| Действие | Как |
+| Action | How |
 |---|---|
-| Двигать объект | ЛКМ + drag |
-| Соединить | клик по A, ПКМ по B |
-| Стрелка / линия / группа | клавиши C / V / B |
-| Метка связи | двойной клик по линии (`!` в конце = жирная, главная) |
-| Развернуть / удалить стрелку | клик по линии, затем R / Delete |
-| Переименовать | двойной клик по объекту (кириллица нативно) |
-| Группа | B + обвести рамкой |
-| Зум / панорама | колесо мыши / Alt+ЛКМ или средняя кнопка |
-| Объект непонятен | наведи - всплывает подсказка; СКМ = «не понял», ставит `?` |
+| Move object | LMB + drag |
+| Connect | click A, RMB on B |
+| Arrow / line / group | keys C / V / B |
+| Connection label | double click on line (`!` at the end = bold, main) |
+| Flip / delete arrow | click on line, then R / Delete |
+| Rename | double click on object (Cyrillic natively) |
+| Group | B + wrap with a frame |
+| Zoom / pan | mouse wheel / Alt+LMB or middle button |
+| Object is unclear | hover - tooltip pops up; MMB = "don't understand", sets `?` |
 | Undo / Redo / Export | Ctrl+Z / Ctrl+Y / Ctrl+E |
-| Закрыть окно | авто-экспорт + сигнал агенту |
+| Close window | auto-export + signal to agent |
 
-Первое открытие - подсказка прямо на холсте, исчезает после первой стрелки.
+First opening - a hint right on the canvas, disappears after the first arrow.
 
 ```bash
 python3 mindmap-canvas.py --nodes "Насос — качает жидкость::Фильтр::Бак" --title "гидравлика"
 ```
 
-Через « — » после имени - бытовая фраза для hover-подсказки. Экспорт в
+Via " — " after the name - a casual phrase for a hover tooltip. Export to
 `/tmp/mindmap-export.txt`:
 
 ```
 === NODES ===
   A: Насос
 === CONNECTIONS ===
-  A => B : качает      # => жирная, ": текст" метка, -- линия
-  [Контур] -> C        # групповые стрелки тоже сохраняются
+  A => B : качает      # => bold, ": text" label, -- line
+  [Контур] -> C        # group arrows are also saved
 === GROUPS ===
   [Контур]: A, B
 ```
 
-Проверка агента - `mindmap-review.py --mark "X-Y:add:почему" --ask "X-Y:вопрос"`:
-открывает канвас с твоим расположением, правки жёлтым пунктиром, вопрос оранжевым
-узлом. Весь протокол машинный - его может вести любая LLM за строгим шаблоном.
+Agent review - `mindmap-review.py --mark "X-Y:add:почему" --ask "X-Y:вопрос"`:
+opens canvas with your layout, corrections with a yellow dashed line, question with an orange
+node. The entire protocol is machine-readable - any LLM can maintain it following a strict template.
 
-## Философия (для любопытных)
+## Philosophy (for the curious)
 
-Инструмент построен на двух методологиях: **Justin Sung** (майндмаппинг как
-глубокое кодирование: GRINDE, слои, перерисовка, retrieval) и **concept maps
-Новака** (карта как точная передача понимания другому). Полный фундамент,
-включая протокол учебных сессий и правила поведения агента - в
+The tool is built on two methodologies: **Justin Sung** (mindmapping as
+deep encoding: GRINDE, layers, redrawing, retrieval) and **Novak's concept maps**
+(map as a precise transmission of understanding to another). The full foundation,
+including the protocol of study sessions and agent behavior rules - is in
 [FOUNDATION.md](FOUNDATION.md).
 
-Коротко, почему это работает:
+Briefly, why it works:
 
-- **Generation effect**: построенное самим помнится кратно дольше прочитанного.
-- **Полезная vs вредная тяжесть**: агент никогда не рисует связи за тебя (там
-  учёба), но агрессивно снимает словарный перегруз (термины простыми словами,
-  подсказки, объяснение узла по запросу).
-- **Cognitive load**: 4-6 объектов на сцене, максимум 2 правки за итерацию.
-- **Карта = договор**: после сверки агент обязан следовать схеме, а не кивнуть
-  и забыть.
+- **Generation effect**: what is built by oneself is remembered multiple times longer than what is read.
+- **Desirable vs undesirable difficulty**: the agent never draws connections for you (that's where
+  learning happens), but aggressively removes vocabulary overload (terms in simple words,
+  tooltips, explanation of a node upon request).
+- **Cognitive load**: 4-6 objects on the scene, maximum 2 corrections per iteration.
+- **Map = contract**: after verification, the agent is obliged to follow the diagram, not just nod
+  and forget.
 
-## Интеграции
+## Integrations
 
-- `integrations/claude-code/` - скилл для Claude Code (`~/.claude/skills/mindmap/`)
-- `integrations/pi/` - расширение для [Pi](https://github.com/earendil-works/pi)
-  с умным автотриггером (только объяснительные запросы)
-- `integrations/openclaude/` - скилл + hook prompt для OpenClaude
+- `integrations/claude-code/` - skill for Claude Code (`~/.claude/skills/mindmap/`)
+- `integrations/pi/` - extension for [Pi](https://github.com/earendil-works/pi)
+  with smart auto-trigger (explanatory requests only)
+- `integrations/openclaude/` - skill + hook prompt for OpenClaude
 
-## Лицензия
+## License
 
 MIT
+

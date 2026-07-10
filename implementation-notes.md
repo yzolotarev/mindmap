@@ -1,30 +1,31 @@
-# Implementation notes - этап 1 (10.07.2026)
+# Implementation notes - phase 1 (10.07.2026)
 
-План: FOUNDATION.md + переписанный скилл (4 копии) + фикс ревью-бага + жест-протокол
-+ README/install.sh + onboarding на канвасе. Этап 2 (позже): под-канвасы со слоями,
-lasso, brain-dump режим, GRINDE-аудит, раздельные файлы сессий, стабильные ID узлов.
+Plan: FOUNDATION.md + rewritten skill (4 copies) + review bug fix + gesture-protocol
++ README/install.sh + onboarding on canvas. Phase 2 (later): sub-canvases with layers,
+lasso, brain-dump mode, GRINDE audit, separate session files, stable node IDs.
 
 ## Deviations
 
-- **Ревью терял групповые стрелки.** Найдено при живом использовании 10.07: парсер
-  mindmap-review.py пропускал строки `[Group] -> A` (skip по `startswith("[")`) и не
-  матчил `A -> [Group]` (регэксп `\w+`). У юзера выжили 2 связи из 5. План этого не
-  предусматривал - фикс добавлен в этап 1 как обязательный.
-- **Ревью «Суть инструмента» собран вручную** (essence-review.json в scratchpad),
-  минуя баг. Ответ юзера на вопрос «Взаимопонимание - старт или итог?» не получен
-  (окно не закрыто); эссенция взята из его словесной формулировки: взаимопонимание =
-  цель, которая достаёт инструмент. Занесено в FOUNDATION как петля.
-- **Одинаковые имена групп неоднозначны** в текстовом экспорте (`[Group] -> A` при
-  двух группах «Group»). Резолв - первая группа с таким именем. Известное ограничение,
-  структурный фикс = стабильные ID (этап 2).
-- **Pi оставлен БЕЗ --no-signal, намеренно.** План требовал единообразия с Claude
-  Code, но в Pi xdotool-фраза и есть механизм пробуждения (нет фоновых задач,
-  будящих агента). Консервативный выбор: не трогать рабочий контур.
-- **Onboarding-подсказка только в веб-канвасе.** Tk-fallback без неё (редкий путь,
-  добавить при первом реальном использовании Tk).
-- **--dry флаг добавлен в mindmap-review.py** сверх плана: без него фикс группового
-  бага нельзя проверить, не открывая окно.
-- **R = развернуть выделенную стрелку** добавлено сверх плана: на живом e2e 10.07
-  юзер нарисовал стрелку не в ту сторону и не нашёл способа развернуть (написал
-  вопрос прямо в метку связи). Трение ровно в 60-секундном жесте - починено сразу
-  (клик по линии + R/К, подсказка в статус-баре, строка в README).
+- **Review lost group arrows.** Found during live use on 10.07: the parser
+  mindmap-review.py skipped lines `[Group] -> A` (skip by `startswith("[")`) and did not
+  match `A -> [Group]` (regex `\w+`). The user had 2 out of 5 links survive. The plan did not
+  provide for this - the fix was added to phase 1 as mandatory.
+- **The "Essence of the tool" review was assembled manually** (essence-review.json in scratchpad),
+  bypassing the bug. The user's answer to the question "Is mutual understanding a start or a result?" was not received
+  (the window was not closed); the essence was taken from his verbal formulation: mutual understanding =
+  the goal that the tool achieves. Added to FOUNDATION as a loop.
+- **Identical group names are ambiguous** in text export (`[Group] -> A` with
+  two groups named "Group"). Resolution - the first group with that name. Known limitation,
+  structural fix = stable IDs (phase 2).
+- **Pi left WITHOUT --no-signal, intentionally.** The plan required uniformity with Claude
+  Code, but in Pi the xdotool phrase is the awakening mechanism (no background tasks
+  waking the agent). Conservative choice: do not touch the working circuit.
+- **Onboarding hint only in web canvas.** Tk fallback is without it (rare path,
+  add during the first real use of Tk).
+- **--dry flag added to mindmap-review.py** beyond the plan: without it, the group
+  bug fix cannot be verified without opening a window.
+- **R = flip selected arrow** added beyond the plan: on live e2e on 10.07
+  the user drew an arrow in the wrong direction and found no way to flip it (wrote
+  the question right in the link label). Friction exactly in the 60-second gesture - fixed immediately
+  (click on line + R/K, hint in status bar, line in README).
+

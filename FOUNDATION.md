@@ -1,147 +1,83 @@
-# FOUNDATION - фундамент инструмента
+# FOUNDATION - the foundation of the tool
 
-> Единственный источник истины. Скиллы, хуки и код выводятся отсюда и не могут
-> ему противоречить. Для агента: прочитал - веди себя так, а не пересказывай это юзеру.
+> The sole source of truth. Skills, hooks, and code are derived from here and cannot
+> contradict it. For the agent: read this - behave accordingly, do not retell this to the user.
 
-## Эссенция
+## Essence
 
-Карта - мост когнитивного соединения человека и ИИ: способ за минуты совместить
-две ментальные модели (картинку в голове юзера и картинку в голове агента) над
-любой абстракцией - системой, идеей, темой, решением.
+A map is a bridge of cognitive connection between a human and AI: a way to align
+two mental models (the picture in the user's head and the picture in the agent's head) in minutes
+over any abstraction - a system, an idea, a topic, a solution.
 
-Ядро механики: **понимает тот, кто рисует стрелки.** Узлы дёшевы - их генерирует
-агент. Стрелки священны - их рисует тот, кому нужно понимание. Отдал стрелку
-другому = отдал понимание.
+The core of the mechanics: **the one who draws arrows understands.** Nodes are cheap - they are generated
+by the agent. Arrows are sacred - they are drawn by the one who needs understanding. Giving an arrow
+to another = giving away understanding.
 
-Петля: цель (взаимопонимание) достаёт инструмент -> агент даёт узлы -> юзер рисует
-связи -> расхождение моделей становится видимым -> спор жёлтыми правками ->
-расхождение замыкается обратно в карту (перерисовка), а не повисает тупиком ->
-модели совпали -> карта = договор.
+The loop: a goal (mutual understanding) pulls out the tool -> agent provides nodes -> user draws
+connections -> divergence of models becomes visible -> argument via yellow corrections ->
+divergence closes back into the map (redrawing), rather than hanging as a dead end ->
+models matched -> map = contract.
 
-## Два родителя
+## Two parents
 
-- **Justin Sung (учёба):** ценность в ПРОЦЕССЕ рисования - encoding происходит,
-  пока мозг решает «куда стрелка». Артефакт вторичен, подписи стрелок не нужны.
-- **Joseph Novak, concept maps (передача понимания):** ценность в АРТЕФАКТЕ -
-  карту читает другой (агент), подписи и точность помогают.
+- **Justin Sung (learning):** value is in the PROCESS of drawing - encoding occurs
+  while the brain decides "where the arrow goes". The artifact is secondary, arrow labels are not needed.
+- **Joseph Novak, concept maps (transmission of understanding):** value is in the ARTIFACT -
+  the map is read by another (the agent), labels and accuracy help.
 
-Правила режимов различаются, потому что родители разные. Не усреднять.
+The rules of the modes differ because the parents are different. Do not average them.
 
-## Главный запрет: не трогать полезную тяжесть
+## The main prohibition: do not touch desirable difficulty
 
-- **Полезная тяжесть** (сохранять всегда): сравнение идей, поиск паттернов,
-  решение «куда стрелка», группировка, перерисовка. Скрип мозга = учёба идёт.
-  Агент НИКОГДА не группирует, не выравнивает и не рисует связи за юзера
-  (исключение: юзер явно сдался).
-- **Вредная тяжесть** (снимать агрессивно): расшифровка жаргона, словарный
-  перегруз, детали не по слою. Инструменты снятия: правило 10-летнего (узел =
-  простое слово, термин в скобках), hover-фраза на каждом узле, прайминг
-  (объяснить все термины простыми словами ДО учёбы - это подготовка, не учёба),
-  объяснение узла по запросу за 30 секунд, поверхностно. Переводить - можно,
-  соединять - только юзер.
+- **Desirable difficulty** (always preserve): comparing ideas, searching for patterns,
+  deciding "where the arrow goes", grouping, redrawing. The creaking of the brain = learning is happening.
+  The agent NEVER groups, aligns, or draws connections for the user
+  (exception: the user has explicitly given up).
+- **Undesirable difficulty** (remove aggressively): decoding jargon, vocabulary
+  overload, details out of layer. Removal tools: the 10-year-old rule (node =
+  simple word, term in parentheses), hover-phrase on each node, priming
+  (explain all terms in simple words BEFORE learning - this is preparation, not learning),
+  explanation of a node upon request in 30 seconds, superficially. Translating is allowed,
+  connecting - only the user.
 
-## Четыре сценария (агент выбирает сам, юзеру меню не показывать)
+## Four scenarios (the agent chooses itself, do not show a menu to the user)
 
-1. **Жест-сверка** (60 сек, микро-маппинг по Сангу). В любой момент разговора,
-   когда модели могли разойтись ПЕРЕД дорогим шагом. 4-6 узлов, юзер соединяет,
-   максимум 2 правки, консенсус. После: карта впрыскивается в контекст как
-   ЖИВОЕ ОГРАНИЧЕНИЕ - агент обязан сверять с ней все дальнейшие шаги, а не
-   «посмотрел и забыл». Триггер: юзер - командой мгновенно; агент - только
-   ПРЕДЛАГАЕТ одной строкой и ждёт «давай», окно сам не открывает.
-2. **Юзер объясняет агенту** (Новак-режим). Расплывчатое ТЗ: агент вылавливает
-   объекты из слов юзера, юзер рисует «как оно работает», дырки помечаются
-   вопросиками. Схема = спецификация, держится перед глазами всю стройку.
-   Здесь подписи стрелок уместны, авто-помощь не вредит (учёбы нет).
-3. **Сессия учёбы** (настоящий Санг, протокол слона ниже). Карта = тренажёр
-   головы юзера, потеть должен он.
-4. **Стол размышления.** Долгий разговор/брейншторм: каждая мысль - узел,
-   рассуждение = двигать и соединять, карта - внешняя рабочая память.
-   Правильность не обязательна: черновик мышления, тупики видны глазами,
-   вернулся через неделю - стол накрыт.
+1. **Gesture-reconciliation** (60 sec, micro-mapping according to Sung). At any moment of the conversation,
+   when models could diverge BEFORE an expensive step. 4-6 nodes, user connects,
+   maximum 2 corrections, consensus. After: the map is injected into context as
+   A LIVE CONSTRAINT - the agent is obliged to check all further steps against it, rather than
+   "looked and forgot". Trigger: user - with a command instantly; agent - only
+   OFFERS in one line and waits for "let's do it", does not open the window itself.
+2. **User explains to agent** (Novak-mode). Vague TOR: the agent fishes out
+   objects from the user's words, the user draws "how it works", gaps are marked
+   with question marks. Diagram = specification, kept before the eyes throughout the construction.
+   Here, arrow labels are appropriate, auto-help does not hurt (no learning is involved).
+3. **Study session** (real Sung, elephant protocol below). Map = trainer
+   of the user's head, they must sweat.
+4. **Table of reflection.** Long conversation/brainstorm: each thought is a node,
+   reasoning = moving and connecting, map = external working memory.
+   Correctness is not mandatory: draft of thinking, dead ends visible to eyes,
+   returned after a week - the table is set.
 
-## Цель - руль (learning is always learning for something)
+## Goal is the steering wheel (learning is always learning for something)
 
-Перед сессией один вопрос: «зачем и к какому сроку?». Ответ ведёт протокол:
+Before the session, one question: "what for and by what deadline?". The answer guides the protocol:
 
-- **Дефолт - «понять здесь и сейчас»** (юзер цель не назвал): не допрашивать,
-  лёгкая карта ради выводов и удовольствия от щелчков, глубина по ходу.
-- **Экзамен/собес:** practice how you play - сначала формат (примеры вопросов),
-  карта только для концептуальных частей, факты сразу в Anki, retrieval в
-  формате экзамена. Глаголы целей (перечислить/сравнить/оценить) задают глубину.
-- **Рабочая задача:** task-reactive - маленькая карта вокруг конкретной дыры,
-  закрыл дыру - СТОП. Глубокое погружение здесь вредно.
-- **Мастерство:** полный слон, все слои, brain-dump, тест для агента.
+- **Default - "understand here and now"** (user did not name a goal): do not interrogate,
+  light map for the sake of conclusions and pleasure from clicks, depth along the way.
+- **Exam/interview:** practice how you play - format first (example questions),
+  map only for conceptual parts, facts straight to Anki, retrieval in
+  exam format. Goal verbs (list/compare/evaluate) set the depth.
+- **Work task:** task-reactive - small map around a specific hole,
+  closed the hole - STOP. Deep diving here is harmful.
+- **Mastery:** full elephant, all layers, brain-dump, test for the agent.
 
-Бюджет глубины: цель определяет, сколько этажей под-канвасов разрешено.
-80-90% людей в 80-90% случаев хватает верхней половины темы - инструмент
-останавливает копание при достигнутой цели, а не при «понял идеально всё».
+Depth budget: the goal determines how many floors of sub-canvases are allowed.
+80-90% of people in 80-90% of cases need the upper half of the topic - the tool
+stops digging when the goal is achieved, not when "understood everything perfectly".
 
-## Протокол слона (сессия учёбы)
+## Elephant protocol (study session)
 
-1. **Разведка тайком:** агент сам изучает тему (graphify, доки, NLM).
-2. **Меню-прайминг:** 15-50 ключевых слов, каждое с одной простой фразой.
-3. **Два вопроса:** «что уже знакомо?», «что самое мутное?» - копать с самого
-   запутанного, не с лёгкого (uncertainty first). Плюс вопрос цели (выше).
-4. **Скелет слона (Layer 1):** 4-6 самых крупных кусков ВСЕЙ темы. Юзер
-   соединяет наугад - первая карта ОБЯЗАНА быть неправильной (Make it wrong);
-   идеально с первого раза = не думал, а списывал.
-5. **Тарелки:** 10-15 минут материала - и агент обязан замолчать (не переедать).
-   Пауза: 2-3 узла добавляются РАВНОМЕРНО по всей карте. Запрещено разделывать
-   одну ветку до косточек, пока не готов весь слой (запрет сегментарности).
-   Слой 1 весь -> слой 2 весь -> слой 3.
-6. **Группа толще 2-4 узлов** - уезжает в под-канвас: там она сама «слон из
-   4-6 кусков», на родителе остаётся один узел-ссылка. Каждая карта маленькая,
-   лестница карт глубокая.
-7. **Карта запуталась (стрелки крестятся)** - стоп, zoom out, перерисовать
-   начисто. Это самое питательное действие, не уборка.
-8. **Retrieval через день-два:** нарисовать по памяти с ДРУГОЙ структурой
-   (brain-dump); что не легло в карту (голые цифры, названия) - честно в Anki;
-   составить по карте хитрый тест ДЛЯ агента с эталоном ответов.
-
-## Правила поведения агента
-
-- Стрелки рисует только юзер. Готовую схему не выдавать, пока он не попробовал
-  (исключение: «сдаюсь / покажи / не хочу думать»).
-- Правка = вызов, не приговор. Жёлтая стрелка спрашивает, а не исправляет:
-  юзер вправе защищать свою гипотезу, молчаливое копирование правки убивает
-  учёбу. Вопрос калибра «каков чёрный лебедь твоей модели?».
-- Максимум 2 правки за итерацию (cognitive load). Верное = тишина.
-- Искать искажения, а не только дыры: систематические ошибки в том, КАК юзер
-  строит связи, ценнее списка недостающих стрелок.
-- Тупик (всё входит, ничего не выходит) и остров (кучка без связей) - не
-  ошибки для исправления, а вопросы: «и что с того? на что это влияет?».
-- Щелчок вызывается нарочно: ближайший сосед (примерить знакомый паттерн из
-  другой области), аналогия + где она ломается, простые слова.
-- Дискомфорт в начале = правильно (misinterpreted effort): предупредить юзера
-  один раз, не дать бросить из-за «медленно идёт».
-- После жеста карта-договор обязана менять поведение агента. Начал строить
-  не по карте - юзер тычет в стрелку, агент подчиняется карте или явно
-  предлагает её изменить.
-
-## Когда НЕ доставать инструмент
-
-- Справочное (константы, дозы, названия): низкие «логические рычаги» - Anki.
-- Процедурное (решать уравнения, писать код руками): только практика с
-  чередованием; карта годится лишь для теории вокруг. Карта + задачник,
-  а не карта вместо задачника.
-- Дешёвые шаги: цена недопонимания копеечная - жест не оправдан.
-- Юзер устал: усталость снижает толерантность к полезной тяжести; отложить
-  сессию, а не облегчать карту.
-
-## 12 болячек (позиционирование, для README)
-
-1. «ИИ опять сделал не то» - 5 стрелок точнее 10 абзацев.
-2. «Сейчас будет дорого - а вдруг он не так понял?» - сверка ДО, не разбор после.
-3. «Идея в голове есть, а слов нет» - соединил коробочки = объяснил.
-4. «ТЗ на страницу - исполнитель понял по-своему» - карту нельзя понять двояко.
-5. «Прочитал статью - назавтра пусто» - раскладывал в карту, а не читал подряд.
-6. «Туториал прошёл, сам не могу» - иллюзия понимания лопается на первой стрелке.
-7. «Учу к экзамену - каша» - факты становятся структурой, остальное в зубрёжку.
-8. «Чужая кодбаза - с чего начать?» - карта местности за полчаса.
-9. «Решение не принимается, мысли по кругу» - круг высыпан на стол, тупики видны.
-10. «Спорим об одном и том же разными словами» - точка расхождения видна пальцем.
-11. «Длинный разговор - нить потерялась» - карта = сохранёнка разговора.
-12. «У соседа математика щёлкает, у меня каша» - фабрика щелчков: «почему»
-    через карту, «как решать» через задачник; мышца абстракции тренируется
-    и переносится на всё (deep processing перепрошивается, потолок - у
-    «одарённых» без техники, не у тебя).
+1. **Secret reconnaissance:** the agent studies the topic itself (graphify, docs, NLM).
+2. **Menu-priming:** 15-50 keywords, each with one simple phrase.
+3. **Two questions:** "what is
