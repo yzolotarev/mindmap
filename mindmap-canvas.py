@@ -141,6 +141,9 @@ svg{position:absolute;left:0;top:0;overflow:visible}
 #tip{position:fixed;background:var(--bar);border:1px solid var(--outl);color:var(--fg);
  padding:6px 10px;border-radius:6px;max-width:280px;font-size:12px;line-height:1.35;
  display:none;pointer-events:none;z-index:9}
+#hint{position:fixed;left:50%;top:46%;transform:translate(-50%,-50%);text-align:center;
+ color:var(--fg);opacity:.45;font-size:15px;line-height:1.8;pointer-events:none;z-index:8;
+ display:none}
 .modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center}
 .modal>div{background:var(--bar);padding:16px;border-radius:8px;display:flex;flex-direction:column;gap:10px}
 .modal textarea{background:var(--fill);color:var(--fg);border:0;padding:8px;font:13px Ubuntu;width:420px;height:220px}
@@ -157,7 +160,11 @@ svg{position:absolute;left:0;top:0;overflow:visible}
 </div>
 <div id="wrap"><div id="scene"><svg id="svg" width="6000" height="4000" viewBox="-2000 -2000 6000 4000" style="left:-2000px;top:-2000px"></svg><div id="layer"></div></div><div id="rubber"></div></div>
 <div id="tip"></div>
-<div id="status">C=arrow V=line B=group | ЛКМ=тащить ПКМ=связать 2xЛКМ=имя/метка СКМ по ноду=«не понял» | Ctrl+Z/Y колесо=зум</div>
+<div id="hint">клик по объекту, потом ПРАВЫЙ клик по другому = стрелка<br>
+тащи объекты куда хочешь - расположение тоже смысл<br>
+наведи мышь на объект - подсказка, что это<br>
+закрыл окно = схема улетела агенту</div>
+<div id="status">C=arrow V=line B=group | ЛКМ=тащить ПКМ=связать 2xЛКМ=имя/метка СКМ по ноду=«не понял» | клик по линии + R=развернуть Delete=удалить | Ctrl+Z/Y колесо=зум</div>
 <script>
 const S = __STATE__;
 const wrap=document.getElementById('wrap'),scene=document.getElementById('scene'),
@@ -202,6 +209,7 @@ function render(){
   d.textContent=n.name;d.style.left=n.x+'px';d.style.top=n.y+'px';
   if(n.qn)d.classList.add('qn');
   if(sel.has(i))d.classList.add('sel');layer.appendChild(d)});
+ document.getElementById('hint').style.display=S.conns.length?'none':'block';
  drawShapes()}
 function defs(){const m=(id,c)=>'<marker id="'+id+'" viewBox="0 0 10 10" refX="9" refY="5" '+
  'markerWidth="7" markerHeight="7" orient="auto-start-reverse">'+
@@ -304,7 +312,8 @@ wrap.addEventListener('mousedown',ev=>{
   sel.clear();sel.add('g'+gid);drag={type:'g',gi:+gid,last:toScene(ev.clientX,ev.clientY)};
   dragSnap=snap();moved=false;updateSel();return}
  const cid=ev.target.dataset&&ev.target.dataset.c;
- if(cid!==undefined&&cid!==''){sel.clear();selEdge=+cid;updateSel();return}
+ if(cid!==undefined&&cid!==''){sel.clear();selEdge=+cid;updateSel();
+  msg('Стрелка выделена: R=развернуть  Delete/Backspace=удалить  2xЛКМ=метка');return}
  sel.clear();updateSel();
  rubberOn={x:ev.clientX,y:ev.clientY};
  Object.assign(rub.style,{display:'block',left:ev.clientX+'px',top:ev.clientY+'px',width:0,height:0})});
@@ -362,13 +371,16 @@ wrap.addEventListener('wheel',ev=>{ev.preventDefault();
  view.y=ev.clientY-(ev.clientY-view.y)*k/view.k;view.k=k;applyView()},{passive:false});
 addEventListener('keydown',ev=>{
  if(ev.target.isContentEditable||/TEXTAREA|INPUT/.test(ev.target.tagName))return;
- const k=ev.key.toLowerCase();
+ // физическая клавиша (KeyZ и т.п.): горячие клавиши работают в любой раскладке
+ const k=(ev.code&&/^Key[A-Z]$/.test(ev.code))?ev.code.slice(3).toLowerCase():ev.key.toLowerCase();
  if(ev.ctrlKey&&k==='z'&&!ev.shiftKey){ev.preventDefault();undo();return}
  if(ev.ctrlKey&&(k==='y'||(k==='z'&&ev.shiftKey))){ev.preventDefault();redo();return}
  if(ev.ctrlKey&&k==='e'){ev.preventDefault();push(true);return}
  if(ev.ctrlKey&&k==='s'){ev.preventDefault();saveF();return}
  if(k==='c')setMode('arrow');if(k==='v')setMode('line');if(k==='b')setMode('group');
- if(ev.key==='Delete'){
+ if(k==='r'&&selEdge>=0){pushUndo();const c=S.conns[selEdge];
+  const t=c.f;c.f=c.t;c.t=t;render();push();msg('Стрелка развёрнута');return}
+ if(ev.key==='Delete'||ev.key==='Backspace'){
   if(selEdge>=0){pushUndo();S.conns.splice(selEdge,1);selEdge=-1;render();push();return}
   if(!sel.size)return;pushUndo();
   const gs=[...sel].filter(v=>typeof v==='string').map(v=>+v.slice(1));

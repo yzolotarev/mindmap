@@ -39,7 +39,7 @@ def parse_export(path):
             m = re.match(r"\[(.+)\]:\s*(.+)", s)
             if m: groups.append((m.group(1), [x.strip() for x in m.group(2).split(",")]))
             continue
-        if s.startswith("["): continue
+        if s.startswith("[") and section != "conns": continue
         if section == "nodes":
             m = re.match(r"(\w+):\s*(.+)", s)
             if m: nodes[m.group(1)] = m.group(2)
@@ -47,7 +47,7 @@ def parse_export(path):
             m = re.match(r"(\w+):\s*x=(\d+)%\s*y=(\d+)%", s)
             if m: pos[m.group(1)] = (int(m.group(2)), int(m.group(3)))
         elif section == "conns":
-            m = re.match(r"(\w+)\s*(->|--|=>|==)\s*(\w+)(?:\s*:\s*(.+))?", s)
+            m = re.match(r"(\[.+?\]|\w+)\s*(->|--|=>|==)\s*(\[.+?\]|\w+)(?:\s*:\s*(.+))?", s)
             if m: conns.append((m.group(1), m.group(2), m.group(3), (m.group(4) or "").strip()))
     return nodes, pos, conns, groups
 
@@ -58,6 +58,8 @@ def main():
     ap.add_argument("--mark", default="")
     ap.add_argument("--ask", default="")
     ap.add_argument("--title", default="правки")
+    ap.add_argument("--dry", action="store_true",
+                    help="только собрать /tmp/mindmap-review.json, канвас не открывать")
     args = ap.parse_args()
 
     nodes, pos, conns, groups = parse_export(args.export)
@@ -69,12 +71,25 @@ def main():
         xp, yp = pos.get(l, (50, 50))
         json_nodes.append({"name": nodes[l], "x": xp / 100 * W, "y": yp / 100 * H})
 
+    # Концы связей: буква узла ИЛИ группа "[Имя]" -> ссылка "g<индекс>" (как в канвасе).
+    # Раньше групповые стрелки молча терялись (баг 10.07.26, потеря 3 связей из 5).
+    gname = {}
+    for i, (name, _members) in enumerate(groups):
+        gname.setdefault(name, i)
+
+    def endpoint(t):
+        if t.startswith("["):
+            n = t[1:-1]
+            return "g%d" % gname[n] if n in gname else None
+        return idx.get(t)
+
     json_conns = []
     for a, arrow, b, label in conns:
-        if a not in idx or b not in idx: continue
+        fa, fb = endpoint(a), endpoint(b)
+        if fa is None or fb is None: continue
         typ = "arrow" if arrow in ("->", "=>") else "line"
         emph = arrow in ("=>", "==")
-        json_conns.append({"f": idx[a], "t": idx[b], "y": typ, "l": label, "e": emph})
+        json_conns.append({"f": fa, "t": fb, "y": typ, "l": label, "e": emph})
 
     marks = {}
     for tok in args.mark.split(","):
@@ -107,12 +122,17 @@ def main():
     json_groups = []
     for name, members in groups:
         ms = [idx[m] for m in members if m in idx]
-        if ms: json_groups.append({"name": name, "nodes": ms})
+        # добавляем даже пустую: индексы групп должны совпадать со ссылками g<i>
+        json_groups.append({"name": name, "nodes": ms})
 
     data = {"nodes": json_nodes, "conns": json_conns, "groups": json_groups}
     out_path = "/tmp/mindmap-review.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+
+    if args.dry:
+        print(out_path)
+        return
 
     # Пишем в КАНОНИЧЕСКИЙ экспорт (не в отдельный review-файл): иначе всё, что
     # юзер дорисовал в окне правок, уходит в сторону и следующий review читает
