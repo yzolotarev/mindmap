@@ -11,6 +11,11 @@
   wrong = связь юзера неверна -> его связь не трогается, рядом жёлтая пунктирная
           правильная версия
 Без причины подпись по умолчанию: add -> "не хватало", wrong -> "надо так".
+
+--ask "X-Y:вопрос почему" — вопрос «почему» ПРЯМО НА КАНВАСЕ: оранжевый пунктирный
+нод «? вопрос» с пунктиром к обоим концам стрелки юзера. Юзер отвечает правкой
+стрелок или дописывает ответ в нод (2xЛКМ). Формат машинный — вопрос может
+генерить web2api-судья, не только Claude.
 """
 import re, json, argparse, subprocess, sys, os
 
@@ -51,6 +56,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--export", default="/tmp/mindmap-export.txt")
     ap.add_argument("--mark", default="")
+    ap.add_argument("--ask", default="")
     ap.add_argument("--title", default="правки")
     args = ap.parse_args()
 
@@ -85,6 +91,19 @@ def main():
         label = reason or ("не хватало" if tag == "add" else "надо так")
         json_conns.append({"f": idx[a], "t": idx[b], "y": "fix", "l": label, "e": False})
 
+    if args.ask:
+        pair, q = args.ask.split(":", 1)
+        a, b = pair.split("-")
+        if a in idx and b in idx and q.strip():
+            na, nb = json_nodes[idx[a]], json_nodes[idx[b]]
+            qx = (na["x"] + nb["x"]) / 2 + 60
+            qy = min(max((na["y"] + nb["y"]) / 2 - 110, 40), H - 40)
+            json_nodes.append({"name": "? " + q.strip(), "x": qx, "y": qy, "qn": True,
+                               "d": "Ответь: поправь стрелки или допиши ответ в этот нод (2xЛКМ)"})
+            qi = len(json_nodes) - 1
+            json_conns.append({"f": qi, "t": idx[a], "y": "q", "l": "", "e": False})
+            json_conns.append({"f": qi, "t": idx[b], "y": "q", "l": "", "e": False})
+
     json_groups = []
     for name, members in groups:
         ms = [idx[m] for m in members if m in idx]
@@ -95,9 +114,14 @@ def main():
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-    subprocess.Popen(
+    # Пишем в КАНОНИЧЕСКИЙ экспорт (не в отдельный review-файл): иначе всё, что
+    # юзер дорисовал в окне правок, уходит в сторону и следующий review читает
+    # старую версию — молчаливая потеря данных (баг 10.07.26).
+    # subprocess.run (НЕ Popen): блокируемся до закрытия окна, чтобы фоновая
+    # задача завершалась ровно на закрытии канваса и будила агента на анализ.
+    subprocess.run(
         ["python3", CANVAS, "--load", out_path, "--title", args.title,
-         "--no-signal", "--export-file", "/tmp/mindmap-review-export.txt"],
+         "--no-signal", "--export-file", "/tmp/mindmap-export.txt"],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
     )
 
